@@ -4,6 +4,7 @@
 % For calculating the accuracy for linear case.
 
 %----------Loading dataset-----------
+%Below code is used when training and testing data is in seperate mat file.
 % load('monks3_train.mat');
 % X_Train = data(:, 1: end - 1);
 % X1_Train = data(data(:, end) == 1, 1: end - 1);
@@ -65,43 +66,44 @@ epsilon = [0; 0.05; 0.1; 0.2; 0.3; 0.5];			%epsilon1 = epsilon2
 tau = [0.01; 0.1; 0.2; 0.5; 1.0];					%tau1 = tau2
 c = power(10,-6);									%c1 = c2
 
-%-------Sparse_Pin_TSVM--------
-% maxx = 0;
-% for k = 1: 11
-% 	c = c*10;
-% 	for i = 1: size(epsilon, 1)
-% 		for j = 1: size(tau, 1)
-% 			[accuracy] = Sparse_Pin_TSVM(X1_Train, X2_Train, X_Test, Y_Test, c, epsilon(i), tau(j));
-% 			if(maxx < accuracy)
-% 				maxx = accuracy;
-% 				finalc = c;
-% 			end
-% 		end
-% 	end
-% end
+%-------Sparse_Pin_TWSVM--------
+maxx = 0;
+for k = 1: 11
+	c = c*10;
+	for i = 1: size(epsilon, 1)
+		for j = 1: size(tau, 1)
+			[accuracy] = Sparse_Pin_TSVM(X1_Train, X2_Train, X_Test, Y_Test, c, epsilon(i), tau(j));
+			if(maxx < accuracy)
+				maxx = accuracy;
+				finalc = c;
+			end
+		end
+	end
+end
 
-% ans = [];
-% sparsity = [];
-% time = [];
-% for i = 1: size(epsilon, 1)
-% 	temp = [];
-% 	tempSparsity = [];
-% 	tempTime = 0;
-% 	for j = 1: size(tau, 1)
-% 		[accuracy, non_zero_dual_variables, training_time, lambda] = Sparse_Pin_TSVM(X1_Train, X2_Train, X_Test, Y_Test, finalc, epsilon(i), tau(j));
-% 		temp = [temp accuracy];
-% 		if(tau(j) == 0.5)
-% 			tempSparsity = non_zero_dual_variables;
-% 			tempTime = training_time;
-% 		end
-% 	end
-% 	ans = [ans; temp];
-% 	sparsity = [sparsity; tempSparsity'];
-% 	time = [time; tempTime];
-% end
+ans = [];
+sparsity = [];
+time = [];
+for i = 1: size(epsilon, 1)
+	temp = [];
+	tempSparsity = [];
+	tempTime = 0;
+	for j = 1: size(tau, 1)
+		[accuracy, non_zero_dual_variables, training_time, lambda] = Sparse_Pin_TSVM(X1_Train, X2_Train, X_Test, Y_Test, finalc, epsilon(i), tau(j));
+		temp = [temp accuracy];
+		if(tau(j) == 0.5)
+			tempSparsity = non_zero_dual_variables;
+			tempTime = training_time;
+		end
+	end
+	ans = [ans; temp];
+	sparsity = [sparsity; tempSparsity'];
+	time = [time; tempTime];
+end
 
 
 %--------Sparse_Pin_SVM--------
+%Unomment the below code to calculate accuracy and sparsity of Sparse Pin SVM
 % maxx = 0;
 % for k = 1: 11
 % 	c = c*10;
@@ -138,22 +140,23 @@ c = power(10,-6);									%c1 = c2
 
 
 %--------TSVM--------
-maxx = 0;
-ans = [];
-sparsity = [];
-time = [];
-c = power(10,-6);
-for k = 1:11
-	c = c*10;
-	[accuracy, non_zero_dual_variables, training_time] = TSVM(X1_Train, X2_Train, X_Test, Y_Test, c);
-	if(maxx < accuracy)
-		maxx = accuracy;
-		finalc = c;
-	end
-end
+%Unomment the below code to calculate accuracy and sparsity of TWSVM
+% maxx = 0;
+% ans = [];
+% sparsity = [];
+% time = [];
+% c = power(10,-6);
+% for k = 1:11
+% 	c = c*10;
+% 	[accuracy, non_zero_dual_variables, training_time] = TSVM(X1_Train, X2_Train, X_Test, Y_Test, c);
+% 	if(maxx < accuracy)
+% 		maxx = accuracy;
+% 		finalc = c;
+% 	end
+% end
 
-[ans, sparsity, time, lambda] = TSVM(X1_Train, X2_Train, X_Test, Y_Test, finalc);
-sparsity = sparsity'; 
+% [ans, sparsity, time, lambda] = TSVM(X1_Train, X2_Train, X_Test, Y_Test, finalc);
+% sparsity = sparsity'; 
 
 
 ans = 100.*ans;
