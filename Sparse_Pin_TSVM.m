@@ -1,11 +1,15 @@
 %% Authors: Rahul Choudhary & Sanchit Jalan
 
-% Function to calculate SPTWSVM accuracy for linear case
+%--------------Description--------------------
+% Function to calculate accuracy, non-zero
+% dual variables and training time for SPTWSVM
+% (Sparse Pin TWSVM) for linear case.  
+%---------------------------------------------
 
 
 function [accuracy, non_zero_dual_variables, training_time, lambda] = Sparse_Pin_TSVM(X1_Train, X2_Train, X_Test, Y_Test, c, epsilon, tau)
 
-%Here c1 = c2 = c
+% Here c1 = c2 = c
 % epsilon1 = epsilon2 = epsilon
 % tau1 = tau2 = tau
 training_time = 0;
@@ -16,7 +20,7 @@ m2 = size(X2_Train, 1);
 
 n = size(X1_Train, 2);
 
-%---------Original TSVM with Sparse Pinball function for 1st class---------
+%---------------------Sparse Pinball TWSVM for 1st class------------------
 A = X1_Train;
 B = X2_Train;
 e1 = ones(m1, 1);
@@ -61,7 +65,7 @@ for i = 1: size(lambda, 1)
 end
 
 
-%---------Original TSVM with Sparse Pinball function for 2nd class---------
+%---------------------Sparse Pinball TWSVM for 2nd class------------------
 Q = [H*inv(G'*G + delta.*eye(n + 1))*H' zeros(m1, m1); zeros(m1, m1) zeros(m1, m1)];
 
 f = [-e1.*(epsilon/tau + 1); e1.*(epsilon*(1 + 1/tau))];

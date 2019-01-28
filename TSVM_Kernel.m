@@ -1,8 +1,13 @@
 %% Authors: Rahul Choudhary & Sanchit Jalan
 
-% Function to calculate TWSVM accuracy with rbf kernel
+%--------------Description--------------------
+% Function to calculate accuracy, non-zero
+% dual variables and training time for
+% TSVM  for non-linear case.  
+%---------------------------------------------
 
-function [accuracy, non_zero_dual_variables, training_time, lambda] = TSVM(X1_Train, X2_Train, X_Test, Y_Test, c, gamma)
+
+function [accuracy, non_zero_dual_variables, training_time, lambda] = TSVM_Kernel(X1_Train, X2_Train, X_Test, Y_Test, c, gamma)
 
 training_time = 0;
 non_zero_dual_variables = zeros(2, 1);

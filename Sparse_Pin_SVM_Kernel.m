@@ -1,8 +1,13 @@
 %% Authors: Rahul Choudhary & Sanchit Jalan
 
-% Function to calculate SPSVM accuracy with rbf kernel for non linear case
+%--------------Description--------------------
+% Function to calculate accuracy, non-zero
+% dual variables and training time for
+% Sparse Pin SVM for non-linear case.  
+%---------------------------------------------
 
-function [accuracy, non_zero_dual_variables, training_time, lambda] = Sparse_Pin_SVM(X1_Train, X2_Train, Y_Train, X_Test, Y_Test, c, gamma, epsilon, tau)
+
+function [accuracy, non_zero_dual_variables, training_time, lambda] = Sparse_Pin_SVM_Kernel(X1_Train, X2_Train, Y_Train, X_Test, Y_Test, c, gamma, epsilon, tau)
 
 %Here c1 = c2 = c
 % epsilon1 = epsilon2 = epsilon

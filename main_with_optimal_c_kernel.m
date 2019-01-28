@@ -1,28 +1,38 @@
-%% Authors: Rahul Choudhary  & Sanchit Jalan
+%% Authors: Rahul Choudhary & Sanchit Jalan
 
-% For calculating the accuracy for linear case with optimal C.
+%--------------Description--------------------
+% This file is used for calculating accuracy 
+% obtained while using SPTWSVM or one of 
+% the other two models, i.e., TSVM or Sparse 
+% Pin SVM (for the non-linear case). 
+%---------------------------------------------
 
 
-%----------Loading dataset-----------
-% load('monks1_train.mat');
+%-------------------------------Loading dataset-------------------------------
+
+%----------The snippet below is used when dataset has a test-train split (uncomment when using)--------------
+% load('monks3_train.mat');
 % X_Train = data(:, 1: end - 1);
 % X1_Train = data(data(:, end) == 1, 1: end - 1);
 % X2_Train = data(data(:, end) == -1, 1: end - 1);
-
 % Y_Train = [data(data(:, end) == 1, end); data(data(:, end) == -1, end)];
-% load('monks1_test.mat');
+
+% load('monks3_test.mat');
 % X_Test = data(:, 1: end - 1);
 % Y_Test = data(:, end);
-% whos('-file', 'monks3_test.mat');
+%------------------------------------------------------------------------------------------------------------
 
-load ('haberman.mat');
+
+%-------The snippet below is used when dataset does not have a test-train split(uncomment when using)-------- 
+load('sonar.mat');
+
 [M N] = size(data);                       			%Size of original dataset, M are the number of samples and N - 1 are the number of features, last column are the labels
 
-percentage = 50;
+percentage = 50;									%Percentage of samples used for training
 
-m = floor(M*(percentage/100));                      %Total training samples, 0.x corresponds to 100x% of the total samples
+m = floor(M*(percentage/100));                      %Total training samples
 
-n = N-1;                                			%Number of features
+n = N - 1;                                			%Number of features
 
 x1 = data(data(:, end) == 1, 1: end - 1);			%Samples in data belonging to +1 class
 x2 = data(data(:, end) == -1, 1: end - 1);			%Samples in data belonging to -1 class
@@ -52,20 +62,26 @@ Y2_Test = y2(m2 + 1: end, :);
 
 X_Test = [X1_Test; X2_Test];
 Y_Test = [Y1_Test; Y2_Test];
+%-----------------------------------------------------------------------------------------------------------
 
 
 
-epsilon = 0.5;
-tau = 0.5;
-c = 1.0;
 
-%--------Ten fold cross validation----------
-epsilon = [0; 0.05; 0.1; 0.2; 0.3; 0.5];			%epsilon1 = epsilon2
-tau = [0.01; 0.1; 0.2; 0.5; 1.0];					%tau1 = tau2
-c = power(10,-6);									%c1 = c2
-gamma = power(10, -8);								%gamma in RBF kernel, varief from 10^-7 to 10^3
 
-%-------Sparse_Pin_TSVM--------
+%--------Setting ranges for epsilon, tau, value of c, and gamma---------------------------------------------
+epsilon = [0; 0.05; 0.1; 0.2; 0.3; 0.5];			%Here epsilon = epsilon1 (for subproblem 1) = epsilon2 (for subproblem 2)
+tau = [0.01; 0.1; 0.2; 0.5; 1.0];					%Here tau = tau1 (for subproblem 1) = tau2 (for subproblem 2)
+c = power(10, -6);									%Here c = c1 (for subproblem 1) = c2 (for subproblem 2)
+gamma = power(10, -8);								%gamma in RBF kernel, same in both subproblems
+%-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+%----------------------Model selection(keep only one uncommented when executing)----------------------------
+
+%-------Accuracy for Sparse_Pin_TSVM (uncomment when using)--------
 ans = [];
 sparsity = [];
 time = [];
@@ -112,9 +128,10 @@ for i = 1: size(epsilon, 1)
 	optimal_c = [optimal_c; tempc];
 	optimal_gamma = [optimal_gamma; tempgamma];
 end
+%------------------------------------------------------------------
 
 
-%--------Sparse_Pin_SVM--------
+%--------Accuracy for Sparse_Pin_SVM (uncomment when using)--------
 % ans = [];
 % sparsity = [];
 % time = [];
@@ -161,9 +178,10 @@ end
 % 	optimal_c = [optimal_c; tempc];
 % 	optimal_gamma = [optimal_gamma; tempgamma];
 % end
+%------------------------------------------------------------------
 
 
-%--------TSVM--------
+%-------------Accuracy for TSVM (uncomment when using)-------------
 % maxx = 0;
 % ans = [];
 % sparsity = [];
@@ -188,6 +206,9 @@ end
 % optimal_c = finalc;
 % optimal_gamma = finalgamma;
 % grid_max = maxx;
+%------------------------------------------------------------------
+
+%-----------------------------------------------------------------------------------------------------------
 
 
 ans = 100.*ans;
@@ -197,14 +218,9 @@ disp(ans);
 
 disp(optimal_c);
 
-disp(sparsity);
+% disp(sparsity);
 
-time = round(time, 3);
-time = single(time);
-disp(time);
-
-%--------Evaluating accuracy of obtained SVM model---------
-% [accuracy] =Sparse_TSVM(X1_Train, X2_Train,X_Test,Y_test,c1, epsilon, tau) 
-fprintf('The accuracy is %u %. \n\n', grid_max*100);
-% fprintf('The accuracy is %u %. \n\n', accuracy*100);
-fprintf('The optimal value of c is %u %. \n\n', finalc);
+% time = round(time, 3);
+% time = single(time);
+% disp(time);
+%-----------------------------------------------------------------------------------------------------------------------------
