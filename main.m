@@ -1,4 +1,4 @@
-%% Authors: Rahul Choudhary  & Sanchit Jalan
+%% Authors: M. Tanveer, A. Tiwari, Rahul Choudhary  and Sanchit Jalan
 
 %--------------Description--------------------
 % This file is used for calculating sparsity 
